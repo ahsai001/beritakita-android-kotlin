@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahsailabs.beritakita_kotlin">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,16 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeritaKitaKotlin">
         <activity
+            android:name=".NewsDetailActivity"
+            android:label="@string/title_activity_news_detail"
+            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar"></activity>
+        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar"></activity>
-        <activity android:name=".LatihanUiActivity">
+            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LatihanUiActivity"></activity>
     </application>
 
 </manifest>
