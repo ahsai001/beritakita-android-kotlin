@@ -12,9 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeritaKitaKotlin">
         <activity
+            android:name=".AddNewsActivity"
+            android:label="@string/title_activity_add_news"
+            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar"></activity>
+        <activity
             android:name=".NewsDetailActivity"
             android:label="@string/title_activity_news_detail"
-            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar"></activity>
+            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -25,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LatihanUiActivity"></activity>
+        <activity android:name=".LatihanUiActivity" />
     </application>
 
 </manifest>

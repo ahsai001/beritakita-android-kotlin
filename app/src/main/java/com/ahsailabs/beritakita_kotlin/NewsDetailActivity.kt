@@ -3,6 +3,7 @@ package com.ahsailabs.beritakita_kotlin
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,8 @@ class NewsDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
         setSupportActionBar(findViewById(R.id.toolbar))
+
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         val newsId = intent.getStringExtra(PARAM_NEWS_ID)
         loadViews()
@@ -109,5 +112,13 @@ class NewsDetailActivity : AppCompatActivity() {
         tvUser?.text = newsDetail.createdBy
         tvBody?.text = newsDetail.body
         Picasso.get().load(newsDetail.photo).into(ivPhoto)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
