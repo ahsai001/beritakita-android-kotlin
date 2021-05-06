@@ -18,19 +18,19 @@ import java.util.*
  * Created by ahsai on 12/7/2017.
  */
 class PermissionUtil(
-    private val activityOrFragment: Any?,
-    private val requestCode: Int,
-    private val taskWillDo: Runnable,
-    private val taskIfDenied: Runnable?
+    private var activityOrFragment: Any?,
+    private var requestCode: Int,
+    private var taskWillDo: Runnable?,
+    private var taskIfDenied: Runnable?
 ) {
     private val context: Context?
-        private get() {
+        get() {
             var context: Context? = null
             if (activityOrFragment != null) {
                 if (activityOrFragment is Activity) {
-                    context = activityOrFragment
+                    context = activityOrFragment as Activity
                 } else if (activityOrFragment is Fragment) {
-                    context = activityOrFragment.activity
+                    context = (activityOrFragment as Fragment).activity
                 }
             }
             return context
@@ -42,7 +42,7 @@ class PermissionUtil(
         initBody: String?,
         vararg permissions: String
     ): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activityOrFragment != null && permissions != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activityOrFragment != null) {
             val needRequested = ArrayList<String>()
             for (permission in permissions) {
                 if (ContextCompat.checkSelfPermission(
@@ -82,7 +82,7 @@ class PermissionUtil(
     }
 
     private fun requestPermisssion(
-        activityOrFragment: Any,
+        activityOrFragment: Any?,
         needRequestedPermission: Array<String>, @IntRange(from = 0) requestCode: Int
     ) {
         if (activityOrFragment is Activity) {
@@ -98,13 +98,13 @@ class PermissionUtil(
 
     fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String>,
+        permissions: Array<String?>,
         grantResults: IntArray
     ) {
         if (requestCode == this.requestCode) {
             // If request is cancelled, the result arrays are empty.
-            val deniedPermissions = ArrayList<String>()
-            val grantedPermissions = ArrayList<String>()
+            val deniedPermissions = ArrayList<String?>()
+            val grantedPermissions = ArrayList<String?>()
             if (grantResults.size > 0) {
                 //partial cancelled
                 var i = 0
@@ -119,9 +119,10 @@ class PermissionUtil(
             } else {
                 //all cancelled
             }
+
             if (grantedPermissions.size == permissions.size) {
                 //do task
-                taskWillDo.run()
+                taskWillDo?.run()
             } else {
                 //there is some denied
                 var isAnyNeverAskAgainChecked = false
@@ -129,7 +130,7 @@ class PermissionUtil(
                     for (deniedPermission in deniedPermissions) {
                         if (!ActivityCompat.shouldShowRequestPermissionRationale(
                                 (activityOrFragment as Activity?)!!,
-                                deniedPermission
+                                deniedPermission!!
                             )
                         ) {
                             isAnyNeverAskAgainChecked = true
@@ -137,8 +138,8 @@ class PermissionUtil(
                     }
                 } else if (activityOrFragment is Fragment) {
                     for (deniedPermission in deniedPermissions) {
-                        if (!activityOrFragment.shouldShowRequestPermissionRationale(
-                                deniedPermission
+                        if (!(activityOrFragment as Fragment).shouldShowRequestPermissionRationale(
+                                deniedPermission!!
                             )
                         ) {
                             isAnyNeverAskAgainChecked = true
@@ -172,12 +173,12 @@ class PermissionUtil(
             showDialogInit: Boolean,
             initTitle: String?,
             initBody: String?,
-            taskWillDo: Runnable,
+            taskWillDo: Runnable?,
             taskIfDenied: Runnable?,
             vararg permissions: String?
         ): PermissionUtil? {
             var permissionUtil: PermissionUtil? = null
-            if (permissions != null && permissions.size > 0) {
+            if (permissions.isNotEmpty()) {
                 permissionUtil =
                     PermissionUtil(activityOrFragment, requestCode, taskWillDo, taskIfDenied)
                 if (permissionUtil.arePermissionsGranted(
@@ -187,18 +188,18 @@ class PermissionUtil(
                         *permissions as Array<out String>
                     )
                 ) {
-                    taskWillDo.run()
+                    taskWillDo?.run()
                 }
             } else {
-                taskWillDo.run()
+                taskWillDo?.run()
             }
             return permissionUtil
         }
 
-        fun checkPermissionAndGo(
+        fun checkPermissionAndGo2(
             activityOrFragment: Any?,
             requestCode: Int,
-            taskWillDo: Runnable,
+            taskWillDo: Runnable?,
             taskIfDenied: Runnable?,
             vararg permissions: String?
         ): PermissionUtil? {
@@ -219,8 +220,8 @@ class PermissionUtil(
             requestCode: Int,
             taskWillDo: Runnable?,
             vararg permissions: String?
-        ): PermissionUtil {
-            return checkPermissionAndGo(
+        ): PermissionUtil? {
+            return checkPermissionAndGo2(
                 activityOrFragment,
                 requestCode,
                 taskWillDo,

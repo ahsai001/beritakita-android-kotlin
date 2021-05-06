@@ -3,6 +3,8 @@
     package="com.ahsailabs.beritakita_kotlin">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -14,7 +16,7 @@
         <activity
             android:name=".AddNewsActivity"
             android:label="@string/title_activity_add_news"
-            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar"></activity>
+            android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar" />
         <activity
             android:name=".NewsDetailActivity"
             android:label="@string/title_activity_news_detail"
@@ -25,7 +27,6 @@
             android:theme="@style/Theme.BeritaKitaKotlin.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

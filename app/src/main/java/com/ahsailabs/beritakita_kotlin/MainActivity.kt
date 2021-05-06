@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -18,7 +19,6 @@ import com.ahsailabs.beritakita_kotlin.ui.login.models.LoginData
 import com.ahsailabs.beritakita_kotlin.utils.SessionUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,8 +35,12 @@ class MainActivity : AppCompatActivity() {
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            val isLoggedIn = SessionUtil.isLoggedIn(this@MainActivity)
+            if (isLoggedIn) {
+                AddNewsActivity.start(this@MainActivity)
+            } else {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_login)
+            }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
