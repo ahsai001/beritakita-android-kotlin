@@ -105,16 +105,14 @@ class PermissionUtil(
             // If request is cancelled, the result arrays are empty.
             val deniedPermissions = ArrayList<String?>()
             val grantedPermissions = ArrayList<String?>()
-            if (grantResults.size > 0) {
+            if (grantResults.isNotEmpty()) {
                 //partial cancelled
-                var i = 0
-                for (result in grantResults) {
+                for ((i, result) in grantResults.withIndex()) {
                     if (result == PackageManager.PERMISSION_DENIED) {
                         deniedPermissions.add(permissions[i])
                     } else if (result == PackageManager.PERMISSION_GRANTED) {
                         grantedPermissions.add(permissions[i])
                     }
-                    i++
                 }
             } else {
                 //all cancelled
