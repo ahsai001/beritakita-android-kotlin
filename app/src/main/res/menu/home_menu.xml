@@ -5,4 +5,10 @@
         android:title="refresh"
         android:icon="@drawable/baseline_refresh_white_24dp"
         app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/home_action_search"
+        android:title="search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 </menu>

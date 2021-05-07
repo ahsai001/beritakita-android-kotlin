@@ -2,6 +2,7 @@ package com.ahsailabs.beritakita_kotlin.ui.home
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var swipeRefreshLayoutUtil: SwipeRefreshLayoutUtil? = null
     private var sflLoading: ShimmerFrameLayout? = null
-
+    private var keyword = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +39,9 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -107,44 +108,62 @@ class HomeFragment : Fragment() {
         AndroidNetworking.post(Config.newsListUrl)
             .setOkHttpClient(HttpUtil.getCLient(requireContext()))
             .addBodyParameter("groupcode", Config.GROUP_CODE)
-            .addBodyParameter("keyword", "")
+            .addBodyParameter("keyword", keyword)
             .setTag("newslist")
             .setPriority(Priority.HIGH)
             .build()
             .getAsObject(
-                NewsListResponse::class.java,
-                object : ParsedRequestListener<NewsListResponse> {
-                    override fun onResponse(response: NewsListResponse) {
-                        if (response.status == 1) {
-                            val resultList = response.data
-                            //TODO: show listview dengan data resultList
-                            resultList?.let {
-                                newsList!!.clear()
-                                newsList!!.addAll(it)
-                                newsAdapter!!.notifyDataSetChanged()
+                    NewsListResponse::class.java,
+                    object : ParsedRequestListener<NewsListResponse> {
+                        override fun onResponse(response: NewsListResponse) {
+                            if (response.status == 1) {
+                                val resultList = response.data
+                                //TODO: show listview dengan data resultList
+                                resultList?.let {
+                                    newsList!!.clear()
+                                    newsList!!.addAll(it)
+                                    newsAdapter!!.notifyDataSetChanged()
+                                }
+                            } else {
+                                //TODO: show info error
+                                showToast(activity, response.message)
                             }
-                        } else {
-                            //TODO: show info error
-                            showToast(activity, response.message)
+
+                            swipeRefreshLayoutUtil?.refreshDone()
+                            hideLoading()
                         }
 
-                        swipeRefreshLayoutUtil?.refreshDone()
-                        hideLoading()
-                    }
+                        override fun onError(anError: ANError) {
+                            //TODO: show info error
+                            showToast(activity, anError.message)
 
-                    override fun onError(anError: ANError) {
-                        //TODO: show info error
-                        showToast(activity, anError.message)
-
-                        swipeRefreshLayoutUtil?.refreshDone()
-                        hideLoading()
-                    }
-                })
+                            swipeRefreshLayoutUtil?.refreshDone()
+                            hideLoading()
+                        }
+                    })
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_menu, menu)
+        val searchView = menu.findItem(R.id.home_action_search).actionView as SearchView
+        searchView.setIconifiedByDefault(true)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                keyword = query
+                swipeRefreshLayoutUtil?.refreshNow()
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+        })
+        searchView.setOnCloseListener {
+            keyword = ""
+            swipeRefreshLayoutUtil?.refreshNow()
+            false
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 

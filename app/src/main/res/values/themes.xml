@@ -19,6 +19,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.BeritaKitaKotlin.NoActionBar.Splash">
+        <item name="android:windowBackground">@color/purple_700</item>
+    </style>
+
     <style name="Theme.BeritaKitaKotlin.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.BeritaKitaKotlin.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
